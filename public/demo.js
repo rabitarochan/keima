@@ -7,4 +7,12 @@ $(function(){
     log('start');
 
     var socket = io.connect('http://localhost/?app=' + app.id);
+    socket.emit("subscribe", "demo");
+    socket.on("news",function(channel, data){
+        log("news:" + channel + ":" + data)
+    });
+
+    $("form#demo").bind("submit",function(event){
+        return false;
+    });
 });

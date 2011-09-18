@@ -18,6 +18,10 @@ form(method="post", action="/app/#{app.id}")
 
 h2 Demo
 
-  p: input#input
+  form#demo
+   input#channel(value="demo")
+   input#data
+   input(type="submit", value="send")
+
   p: textarea#console(cols=80,rows=15)
 
