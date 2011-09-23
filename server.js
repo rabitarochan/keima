@@ -52,75 +52,16 @@ function resource(server, name, actions) {
 }
 resource(app, 'app', require('./app'));
 
-//
-const OAuth = require('oauth').OAuth;
-
-function isLogin(req) {
-    return req.session && req.session.user;
-}
-
-// Login
-const oa = new OAuth(
-    'http://api.twitter.com/oauth/request_token',
-    'http://api.twitter.com/oauth/access_token',
-    '98QWlHwFPYhE3NAbyufs9A',
-    'CovBLwmZOE5wkZ53lgoE9QjrJxTIsn9WeiDJNDx0TS8',
-    '1.0',
-    'http://' + app.address().address + ':' + app.address().port + '/callback',
-    'HMAC-SHA1');
-app.get('/login', function(req, res){
-    oa.getOAuthRequestToken(function(error, oauth_token, oauth_token_secret, results) {
-        if (error) {
-            console.log( error );
-        } else {
-            req.session.oauth = {
-                token: oauth_token,
-                token_secret: oauth_token_secret,
-            };
-            console.log(req.session.oauth);
-            res.redirect('https://api.twitter.com/oauth/authorize?oauth_token=' + oauth_token);
-        }
-    });
-});
-app.get('/callback', function(req, res) {
-    console.log(req.session.oauth);
-    if (req.session.oauth) {
-        req.session.oauth.verifier = req.query.oauth_verifier;
-        var oauth = req.session.oauth;
-       oa.getOAuthAccessToken(oauth.token,
-                              oauth.token_secret,
-                              oauth.verifier, function(error, oauth_access_token, oauth_access_token_secret, results){
-           if (error){
-               console.log(error);
-               res.send("yeah something broke.");
-           } else {
-               req.session.oauth.access_token = oauth_access_token;
-               req.session.oauth.access_token_secret = oauth_access_token_secret;
-               oa.get("http://twitter.com/account/verify_credentials.json",
-                      req.session.oauth.access_token,
-                      req.session.oauth.access_token_secret, function (error, data, response) {
-                          if (error) {
-                              res.send("Error getting twitter screen name : " + sys.inspect(error), 500);
-                          } else {
-                              req.session.twitterScreenName = data["screen_name"];
-                              res.send('You are signed in: ' + req.session.twitterScreenName)
-                          }
-                      });
-           }
-       });
+function bind(self, f){
+    return function(){
+        return f.apply(self, arguments);
     }
-});
-
-// Logout
-app.get('/logout', function(req, res){
-    req.session.destroy(function() {
-        res.redirect('/');
-    });
-});
-
-//
-
-
+}
+const Account = require('./account').Account;
+const account = new Account(app);
+app.get('/login'   , bind(account, account.login))
+app.get('/logout'  , bind(account, account.logout));
+app.get('/callback', bind(account, account.callback));
 
 // socket.io
 const io = require('socket.io').listen(app);

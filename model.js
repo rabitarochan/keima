@@ -3,11 +3,14 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 mongoose.connect(config.mongodb);
-const AppSchema = new Schema({
+mongoose.model('App', new Schema({
     title: String,
     date: Date
-});
-mongoose.model('App', AppSchema);
+}));
+mongoose.model('User', new Schema({
+    twitter_id : String,
+    name : String
+}));
 
 function eq(x, k) {
     return function(_, y) {
@@ -56,5 +59,33 @@ exports.App = {
     },
     remove : function(id, k) {
         App.remove({ _id : id }, success(k));
+    }
+};
+
+const User = mongoose.model('User');
+exports.User = {
+    create : function(tid, name, k) {
+        User.count({ twitter_id : tid },
+                   eq(0, function(b) {
+                       if(b){
+                           const user = new User();
+                           user.twitter_id = tid;
+                           user.name = name;
+                           user.save(function(result, obj){
+                               k(obj._id);
+                           });
+                       } else {
+                           console.log('update');
+                           User.find({ twitter_id : tid }, function(result, obj){
+                               obj[0].name = name;
+                               obj[0].save(function(result, obj){
+                                   k(obj._id)
+                               });
+                           });
+                       }
+                   }));
+    },
+    get : function(id, k) {
+        User.findById(id, success(k));
     }
 }
