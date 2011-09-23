@@ -72,14 +72,14 @@ exports.User = {
                            user.twitter_id = tid;
                            user.name = name;
                            user.save(function(result, obj){
-                               k(obj._id);
+                               k(obj);
                            });
                        } else {
                            console.log('update');
                            User.find({ twitter_id : tid }, function(result, obj){
                                obj[0].name = name;
                                obj[0].save(function(result, obj){
-                                   k(obj._id)
+                                   k(obj)
                                });
                            });
                        }

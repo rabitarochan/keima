@@ -21,7 +21,12 @@ html
             li!= navi('Help', title, '/help')
             li!= navi('About', title, '/about')
         .login
-          p: a(href="/login") Login
+          - if(current_user)
+            p welcome #{current_user.name}
+              a(href="/logout") Logout
+          -else
+            p: a(href="/login") Login
+
       .page
         h1=title
         !=body

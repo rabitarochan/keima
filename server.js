@@ -57,11 +57,17 @@ function bind(self, f){
         return f.apply(self, arguments);
     }
 }
+const model = require('./model');
 const Account = require('./account').Account;
 const account = new Account(app);
 app.get('/login'   , bind(account, account.login))
 app.get('/logout'  , bind(account, account.logout));
 app.get('/callback', bind(account, account.callback));
+app.dynamicHelpers({
+    current_user: function(req, res){
+        return req.session.current_user;
+    }
+});
 
 // socket.io
 const io = require('socket.io').listen(app);
