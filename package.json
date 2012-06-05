@@ -13,6 +13,6 @@
     , "stylus" : "latest"
     , "connect" : "latest"
     , "connect-auth" : "latest"
-    , "formidable" : "latest"
+    , "formidable" : "1.0.11"
   }
 }
