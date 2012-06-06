@@ -1,7 +1,6 @@
 /**
  * Module dependencies.
  */
-
 const express  = require('express');
 const auth     = require('connect-auth');
 const app = module.exports = express.createServer();
