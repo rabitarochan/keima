@@ -20,16 +20,9 @@ app.configure(function() {
     app.use(express.cookieParser());
     app.use(express.session({ secret : 'keima' }));
 
-//    if(app.settings.env == 'development') {
-//        app.use(auth([
-//            auth.Twitter({consumerKey:    '98QWlHwFPYhE3NAbyufs9A',
-//                          consumerSecret: 'CovBLwmZOE5wkZ53lgoE9QjrJxTIsn9WeiDJNDx0TS8',
-//                          callback : 'http://0.0.0.0:3001/auth/twitter_callback' })]));
-//    }else{
-        app.use(auth([
-            auth.Twitter({consumerKey:    '98QWlHwFPYhE3NAbyufs9A',
-                          consumerSecret: 'CovBLwmZOE5wkZ53lgoE9QjrJxTIsn9WeiDJNDx0TS8'})]))
-//    }
+    app.use(auth([
+        auth.Twitter({consumerKey:    '98QWlHwFPYhE3NAbyufs9A',
+                      consumerSecret: 'CovBLwmZOE5wkZ53lgoE9QjrJxTIsn9WeiDJNDx0TS8'})]))
     app.use(express.methodOverride());
     app.use(app.router);
     app.use(require('stylus').middleware({ src: __dirname + '/public' }));
