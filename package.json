@@ -6,7 +6,7 @@
       "express": "latest"
     , "express-resource": "latest"
     , "express-messages": "latest"
-    , "jade": "latest"
+    , "jade": "0.16.2"
     , "socket.io": "latest"
     , "mongoose": "latest"
     , "redis" : "latest"
