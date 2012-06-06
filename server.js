@@ -20,27 +20,27 @@ app.configure(function() {
     app.use(express.cookieParser());
     app.use(express.session({ secret : 'keima' }));
 
-#    if(app.settings.env == 'development') {
-#        app.use(auth([
-#            auth.Twitter({consumerKey:    '98QWlHwFPYhE3NAbyufs9A',
-#                          consumerSecret: 'CovBLwmZOE5wkZ53lgoE9QjrJxTIsn9WeiDJNDx0TS8',
-#                          callback : 'http://0.0.0.0:3001/auth/twitter_callback' })]));
-#    }else{
+//    if(app.settings.env == 'development') {
+//        app.use(auth([
+//            auth.Twitter({consumerKey:    '98QWlHwFPYhE3NAbyufs9A',
+//                          consumerSecret: 'CovBLwmZOE5wkZ53lgoE9QjrJxTIsn9WeiDJNDx0TS8',
+//                          callback : 'http://0.0.0.0:3001/auth/twitter_callback' })]));
+//    }else{
         app.use(auth([
             auth.Twitter({consumerKey:    '98QWlHwFPYhE3NAbyufs9A',
                           consumerSecret: 'CovBLwmZOE5wkZ53lgoE9QjrJxTIsn9WeiDJNDx0TS8'})]))
-#    }
+//    }
     app.use(express.methodOverride());
     app.use(app.router);
     app.use(require('stylus').middleware({ src: __dirname + '/public' }));
     app.use(express.static(__dirname + '/public'));
 });
 
-#if(app.settings.env == 'development') {
-#    app.listen(3001);
-#}else{
-#    app.listen(80, 'keima.no.de');
-#}
+//if(app.settings.env == 'development') {
+//    app.listen(3001);
+//}else{
+//    app.listen(80, 'keima.no.de');
+//}
 app.listen(80);
 
 const io = require('socket.io').listen(app);
