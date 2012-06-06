@@ -14,5 +14,6 @@
     , "connect" : "latest"
     , "connect-auth" : "latest"
     , "formidable" : "1.0.11"
+    , "uglify-js" : "latest"
   }
 }
