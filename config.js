@@ -1,5 +1,3 @@
-exports.mongodb = process.env.MONGO_URL || 'mongodb://localhost/keimadb';
-exports.redis   = {
-        host : 'localhost',
-        port : 6379
-};
+var mobgodbRoot = 'mongodb://localhost';
+exports.mongodb = process.env.MONGO_URL || mobgodbRoot + '/keimadb';
+exports.mubsub  = mobgodbRoot + 'keima-mubsub';

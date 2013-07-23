@@ -1,7 +1,7 @@
 const config     = require('./config');
-const redis      = require('redis');
-const subscriber = redis.createClient(config.redis.port, config.redis.host);
-const publisher  = redis.createClient(config.redis.port, config.redis.host);
+const mubsub     = require('mubsub');
+const client     = mubsub(config.mubsub);
+const mbsbCh     = client.channel('keima')
 const model = require('./model');
 
 function channel(app, name) {
@@ -10,11 +10,13 @@ function channel(app, name) {
 
 exports.run = function(app, io) {
     app.post('/publish/:app', function(req, res){
-        publisher.publish(channel(req.params.app, req.body.channel),
-                          JSON.stringify({
-                              name : req.body.name,
-                              data : req.body.data
-                          }));
+        mbsbCh.publish(
+            channel(req.params.app, req.body.channel),
+            JSON.stringify({
+                name : req.body.name,
+                data : req.body.data
+            })
+        );
         res.send('published');
     });
 
@@ -22,23 +24,19 @@ exports.run = function(app, io) {
         socket.emit('connected', {});
 
         const app = socket.handshake.query.app;
-        const subscribed = [];
+        var subscription;
 
         socket.on("subscribe", function(name){
             const ch = channel(app, name);
-            subscribed.push(ch);
-            subscriber.subscribe(ch);
-        });
-
-        subscriber.on("message", function(channel, data){
-            if(subscribed.indexOf(channel) != -1) {
+            subscription = mbsbCh.subscribe(ch, function(data){
                 const obj = JSON.parse(data);
-                socket.emit(obj.name, channel, obj.data);
-            }
+                socket.emit(obj.name, ch, obj.data);
+            });
         });
 
         socket.on('disconnect', function() {
-            socket.emit('disconnected', {})
+            socket.emit('disconnected', {});
+            subscription.unsubscribe();
         });
     });
 }
